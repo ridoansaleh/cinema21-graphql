@@ -8,20 +8,17 @@ const saltRounds = 10;
 const resolvers = {
   Query: {
     async profile(_, args, { user }) {
-      console.log("query user: ", user);
-      if (!user) {
+      if (!user.username) {
         throw new Error("You are not authenticated");
       }
-      const id = 5;
       return new Promise((resolve, reject) => {
         db.dbConfig.query(
-          "SELECT * FROM user WHERE id = ?",
-          [id],
+          "SELECT * FROM `user` WHERE `username` = ?",
+          [user.username],
           (error, results, fields) => {
             if (error) {
               console.error("Error getProfile: ", error);
               reject(error);
-              return;
             }
             resolve(results[0]);
           }
@@ -46,7 +43,6 @@ const resolvers = {
             if (error) {
               console.error("Error Signup: ", error);
               reject(error);
-              return;
             }
             resolve(
               jsonwebtoken.sign(
@@ -71,7 +67,6 @@ const resolvers = {
             if (error) {
               console.error("Error Login: ", error);
               reject(error);
-              return;
             }
             if (!results.length) {
               reject("No user with that username");

@@ -1,7 +1,41 @@
-const graphql = require("graphql");
-const types = require("./types");
+const { ApolloServer, gql } = require("apollo-server-express");
+const resolvers = require("./resolvers");
 
-exports.cinema21 = new graphql.GraphQLSchema({
-  query: types.queryType,
-  mutation: types.mutationType
+const Query = gql`
+  type User {
+    id: Int!
+    username: String!
+    password: String!
+    name: String!
+    address: String
+    email: String!
+  }
+  type Query {
+    profile: User
+  }
+`;
+
+const Mutation = `
+  type Mutation {
+    signup (username: String!, password: String!, email: String!, name: String!, address: String): String
+    login (username: String!, password: String!): String
+  }
+`;
+
+const typeDefs = [Query, Mutation];
+
+const schema = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) => {
+    return req.user;
+  },
+  playground: {
+    endpoint: "/graphql",
+    settings: {
+      "editor.theme": "light"
+    }
+  }
 });
+
+module.exports = schema;

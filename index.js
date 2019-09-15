@@ -1,18 +1,26 @@
 const express = require("express");
-const ExpressGraphQL = require("express-graphql");
+const jwt = require("express-jwt");
 const db = require("./connection");
 const schema = require("./schema");
+require("dotenv").config();
+const PORT = 3001 || process.env.PORT;
 
 db.connectToDatabase();
 
+const auth = jwt({
+  secret: process.env.JWT_SECRET,
+  credentialsRequired: false
+});
+
 const app = express();
 
-app.use(
-  "/graphql",
-  ExpressGraphQL({ schema: schema.cinema21, graphiql: true })
-);
+app.use("*", auth);
 
-app.listen(3001, error => {
+schema.applyMiddleware({ app });
+
+app.listen(PORT, error => {
   if (error) throw error;
-  console.log("Your graphql api server runs on http://localhost:3001/graphql");
+  console.log(
+    `Your graphql api server runs on http://localhost:${PORT}/graphql`
+  );
 });

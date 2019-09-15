@@ -28,7 +28,9 @@ const schema = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
-    return req.user;
+    return {
+      user: req.user
+    };
   },
   playground: {
     endpoint: "/graphql",

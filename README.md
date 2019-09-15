@@ -90,3 +90,15 @@ Response :
 ### GraphQL Playground
 
 ![GraphQL Playground in Development](./images/playground.png)
+
+## TODO LIST
+
+- Create prettier config or alike
+- learn dotenv, why require it all over the files
+- how to check if object is empty
+- make username unique, reject user if signup with the username that already exist
+- structure code more efficient
+- use ES6 in node
+- testing
+- deployment
+- more and better documentation

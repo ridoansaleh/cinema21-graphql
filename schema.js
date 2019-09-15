@@ -1,5 +1,5 @@
-const { ApolloServer, gql } = require("apollo-server-express");
-const resolvers = require("./resolvers");
+const { ApolloServer, gql } = require('apollo-server-express');
+const resolvers = require('./resolvers');
 
 const Query = gql`
   type User {
@@ -29,15 +29,15 @@ const schema = new ApolloServer({
   resolvers,
   context: ({ req }) => {
     return {
-      user: req.user
+      user: req.user,
     };
   },
   playground: {
-    endpoint: "/graphql",
+    endpoint: '/graphql',
     settings: {
-      "editor.theme": "light"
-    }
-  }
+      'editor.theme': 'light',
+    },
+  },
 });
 
 module.exports = schema;

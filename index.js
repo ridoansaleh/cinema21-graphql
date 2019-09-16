@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const jwt = require('express-jwt');
 const db = require('./connection');
 const schema = require('./schema');
-require('dotenv').config();
 const PORT = 3001 || process.env.PORT;
 
 db.connectToDatabase();

@@ -1,21 +1,20 @@
 const db = require('./connection');
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
-require('dotenv').config();
 
 const saltRounds = 10;
 
 const resolvers = {
   Query: {
     async profile(_, args, { user }) {
-      if (!user.username) {
+      if (!user) {
         throw new Error('You are not authenticated');
       }
       return new Promise((resolve, reject) => {
         db.dbConfig.query(
           'SELECT * FROM `user` WHERE `username` = ?',
           [user.username],
-          (error, results, fields) => {
+          (error, results) => {
             if (error) {
               console.error('Error getProfile: ', error);
               reject(error);
@@ -36,22 +35,38 @@ const resolvers = {
         address,
       };
       return new Promise((resolve, reject) => {
-        db.dbConfig.query('INSERT INTO user SET ?', data, (error, results, fields) => {
-          if (error) {
-            console.error('Error Signup: ', error);
-            reject(error);
-          }
-          resolve(
-            jsonwebtoken.sign(
-              {
-                id: results.insertId,
-                username: data.username,
-              },
-              process.env.JWT_SECRET,
-              { expiresIn: '1y' },
-            ),
-          );
-        });
+        db.dbConfig.query(
+          'SELECT COUNT(*) AS total FROM `user` WHERE `username` = ?',
+          [data.username],
+          (error, results) => {
+            if (error) {
+              console.error('Error searching username: ', error);
+              reject(error);
+              return;
+            }
+            if (results[0].total >= 1) {
+              reject('Username already taken, please use another !');
+            } else {
+              db.dbConfig.query('INSERT INTO user SET ?', data, (error, results, fields) => {
+                if (error) {
+                  console.error('Error Signup: ', error);
+                  reject(error);
+                  return;
+                }
+                resolve(
+                  jsonwebtoken.sign(
+                    {
+                      id: results.insertId,
+                      username: data.username,
+                    },
+                    process.env.JWT_SECRET,
+                    { expiresIn: '1y' },
+                  ),
+                );
+              });
+            }
+          },
+        );
       });
     },
     async login(_, { username, password }) {
@@ -59,10 +74,11 @@ const resolvers = {
         db.dbConfig.query(
           'SELECT * FROM `user` WHERE `username` = ?',
           [username],
-          async (error, results, fields) => {
+          async (error, results) => {
             if (error) {
               console.error('Error Login: ', error);
               reject(error);
+              return;
             }
             if (!results.length) {
               reject('No user with that username');

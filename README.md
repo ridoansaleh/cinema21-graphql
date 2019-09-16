@@ -11,7 +11,7 @@ Tutorial : [Handling authentication in GraphQL – Part 2: JWT
 
 ### Queries
 
-1. Get Profile
+##### 1. Get Profile
 
 Query :
 
@@ -47,7 +47,7 @@ Response :
 
 ### Mutations
 
-1. Signup (Create account)
+##### 1. Signup (Create account)
 
 Mutation :
 
@@ -67,7 +67,7 @@ Response :
     }
 ```
 
-2. Login
+##### 2. Login
 
 Mutation :
 
@@ -93,12 +93,12 @@ Response :
 
 ## TODO LIST
 
-- Create prettier config or alike
-- learn dotenv, why require it all over the files
-- how to check if object is empty
-- make username unique, reject user if signup with the username that already exist
-- structure code more efficient
-- use ES6 in node
-- testing
-- deployment
-- more and better documentation
+- [x] Create prettier config or alike
+- [x] Learn dotenv, why require it all over the files
+- [x] How to check if object is empty
+- [x] Make username unique, reject user if signup with the username that already exist
+- Structure code more readable
+- Use ES6 in node
+- Testing
+- Deployment
+- More and better documentation
